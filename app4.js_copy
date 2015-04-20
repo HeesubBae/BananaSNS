@@ -1,0 +1,110 @@
+//모듈을 추출합니다.
+var socketio = require('socket.io');
+var express = require('express');
+var http = require('http');
+var engine = require('ejs-locals')
+var routes = require('./routes');
+var user = require('./routes/user');
+var path = require('path');
+var MongoStore = require('connect-mongo')(express);
+var session_store = new MongoStore({url: 'mongodb://localhost:27017/banana'});
+
+
+
+
+//웹 서버를 생성합니다.
+var app =express();
+
+//웹 서버 환경 설정을 합니다.
+app.set('port', process.env.PORT || 9000); 
+app.set('views', path.join(__dirname, 'views'));
+app.set('view engine', 'ejs');
+app.use(express.favicon());
+app.use(express.logger('dev'));
+app.use(express.json());
+app.use(express.urlencoded());
+app.use(express.methodOverride());
+//app.use(express.bodyParser());///?
+
+//session
+app.use(express.bodyParser());
+app.use(express.cookieParser());
+app.configure(function(){
+		app.use(express.session({store : session_store,secret: "keyboard cat"}));
+});
+
+app.use(app.router); //반드시 session 뒤에 와야 한다.
+app.use(express.static(path.join(__dirname, 'public')));
+
+app.engine('ejs',engine);
+
+//development only
+if ('development' == app.get('env')) {
+  app.use(express.errorHandler());
+}
+
+
+//API를 위한 페이지 라우팅을 처리합니다.
+app.get('/', routes.index);
+app.post('/member_insert', routes.member_insert);
+app.get('/lobby', routes.lobby);
+//app.get('/UserSocket', routes.userSocket);
+//app.post('/write', routes.write);
+//app.post('/modify', routes.modify);
+//app.post('/del', routes.del);
+
+
+//웹 서버를 실행합니다.
+var server=http.createServer(app);
+server.listen(app.get('port'), function(){
+  console.log('Express server listening on port ' + app.get('port'));
+});
+
+
+//소켓을 생성합니다.
+var io=socketio.listen(server);
+var id;
+var connect = require('connect');
+//그림판 관련 소켓 서버의 이벤트를 연결
+io.sockets.on('connection', function(socket){
+
+	var cookie_string = socket.handshake.headers.cookie;
+	var cookie = require('cookie');
+	var parsed_cookies = 
+		connect.utils.parseSignedCookies(cookie.parse(decodeURIComponent(cookie_string)),'keyboard cat');
+	var connect_sid = parsed_cookies['connect.sid'];
+	console.log('connection ' + connect_sid);
+	if (connect_sid) {
+		session_store.get(connect_sid, function (error, session) {
+			session.socketID = socket.id;
+			session_store.set(connect_sid,session);
+			console.log('connection ' + session.socketID);
+		});
+	}
+	socket.emit('news',  socket.id );
+	socket.on('rint', function(data){
+		io.sockets.sockets[data].emit('smart','kkkkk');
+	});
+});
+
+/*
+app.io.route('ready', function(req){
+	output.cookies = req.cookies;
+	output.session = req.session;
+	console.log('Express server listening on port ' + app.get('port'));
+	req.session.socketID = socket.id;;
+	socket.emit('news',  id );
+	socket.on('rint', function(data){
+		io.sockets.sockets[data].emit('smart','kkkkk');
+	});
+});
+*/
+
+app.get('/', function(req, res){
+	console.log('app.get*********** : '+req.session.socketID);
+	/*var output={};
+	output.cookies = req.cookies;
+	output.session = req.session;
+	req.session.socketID=id;*/
+	res.render('index', { session: "title"} );
+});

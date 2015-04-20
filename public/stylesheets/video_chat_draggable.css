@@ -1,0 +1,112 @@
+  .video_chat_draggable_container{
+	position: absolute;
+	float: left;
+	width:1024px;
+	z-index:26;
+   }
+
+  .video_chat_draggable_pannel_wrap{
+	position: absolute;
+	float:  left;
+	width:  102px; 
+	height: 110px; 
+	background: url('/images/bg_videocam.jpg');
+	z-index:26;
+	display: none;
+   }
+
+   .video_chat_draggable_pannel_status_Bar{
+	width:102px;
+	height:23px;
+	background:#bfe124;
+	color:#ffffff;
+	z-index:26;
+   }
+
+   .video_chat_draggable_pannel_status_Bar span{font-weight:800; padding-top:5px; display:block; text-align:center;z-index:26;}
+
+   .video_chat_draggable_wrap{
+    position: absolute;
+    float:  left;
+    width:  320px; 
+    height: 264px; 
+    border: 1px solid #efefef;
+    background: #ffffff;
+    z-index:26;
+    display: none;
+	top:46px;
+   }
+
+   .video_chat_draggable_status_Bar{
+	width:320px;
+	height:23px;
+	background:#bfe124;
+	color:#ffffff;
+	z-index:26;
+   }
+	.video_chat_menu{
+	 width:102px;
+	 height:87px;
+	 z-index:27;
+	}
+
+.video_chat_draggable_status_Bar span{font-weight:800; display:inline-block; margin:4px 10px;z-index:26;}
+.video_chat_menu_position{width:92px;margin-left:10px;margin-top:10px;z-index:26;}
+#videochat_msg{position:absolute;width:218px;height:102px;background:url(/images/bg_videochat_request.png);margin-right:-390px;right:50%;margin-top:40px;display:none;}
+   
+.canvas_form{position: absolute;width:810px; height:460px;background:#fff;z-index:30;left:0;top:0;display:none;}
+   .canvas_form_title{
+	width:810px;
+	height:20px;
+	background:#bfe124;
+	color:#ffffff;
+	z-index:30;
+	font-weight:800; padding-top:5px; display:block; text-align:center;z-index:26;
+   }
+.room_chat_pannel{width:319px;height:210px;border:#ddd solid;border-width:1px;z-index:26;}
+.scroll_div_room_chat{width:300px;height:190px;margin:13px;z-index:26;}
+.room_chat_input{width:319px;height:27px;border:#ddd solid;border-width:1px;z-index:26;}
+
+.room_chat_content_pannel{width:319px;z-index:25;float:left;}
+.room_chat_photo{width:20px;height:10px;margin:5px;float:left;z-index:25;}
+.room_chat_content{width:210px;background:url(/images/bg_room_chat_middle.jpg);float:left;z-index:25; word-break: break-all; }
+.chat_content_top{width:210px;height:10px;background:url(/images/bg_room_chat_top.jpg);float:left;z-index:25;}
+.chat_content_bottom{width:210px;height:10px;background:url(/images/bg_room_chat_bottom.jpg);float:left;z-index:25;}
+.room_chat_text{width:200px;height:"auto";margin:5px;z-index:25;float:left;}
+
+.room_mychat_photo{width:20px;height:20px;margin-left:5px;z-index:25;float:left;}
+.room_mychat_content{width:210px;margin-left:27px;background:url(/images/bg_my_room_chat_middle.jpg);float:left;z-index:25;  word-break: break-all; }
+.chat_mycontent_top{width:210px;height:10px;background:url(/images/bg_my_room_chat_top.jpg);float:left;z-index:25;}
+.chat_mycontent_bottom{width:210px;height:10px;background:url(/images/bg_my_room_chat_bottom.jpg);float:left;z-index:25;}
+
+
+#photo_form{position: absolute;width:500px;background:#fff;z-index:30;display:none;left:420px;top:286px;}
+.photo_form_title{width:500px;height:20px;background:#bfe124;color:#ffffff;z-index:30;font-weight:800;text-align:center;padding-top:5px; display:block; z-index:26;}
+.photo_display{width:500px;background:#000;z-index:30;text-align:center;}
+#photo_upload{width:500px;height:25px;background:#fff;z-index:30;}
+.chat_draggable_wrap{
+    position: absolute;
+    float:  left;
+    width:  320px; 
+    height: 264px; 
+    border: 1px solid #efefef;
+    background: #ffffff;
+    z-index:26;
+    display: block;
+	top:46px;
+   }
+   .chat_draggable_status_Bar{
+	width:320px;
+	height:23px;
+	background:#e1cf24;
+	color:#ffffff;
+	z-index:26;
+   }
+
+#video_chat_draggable_pannel{left:900px;top:46px;}
+#video_chat_draggable1{left:220px;top:46px;}
+#video_chat_draggable2{left:580px;top:46px;}
+#video_chat_draggable3{left:220px;top:286px;}
+#video_chat_draggable4{left:580px;top:286px;}
+#video_chat_draggable5{left:220px;top:526px;}
+#video_chat_draggable6{left:580px;top:526px;}

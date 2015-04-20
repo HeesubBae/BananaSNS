@@ -1,0 +1,197 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>BananaSNS</title>
+<link href="/stylesheets/style.css" rel="stylesheet" type="text/css">
+<link rel="stylesheet" type="text/css" href="/stylesheets//main.css">
+<link href="/stylesheets/jquery.mCustomScrollbar.css" rel="stylesheet" type="text/css">
+<script src="/socket.io/socket.io.js"></script>
+<script src="/javascripts/jquery-1.9.1.min.js"></script>
+<script>!window.jQuery && document.write(unescape('%3Cscript src="js/minified/jquery-1.9.1.min.js"%3E%3C/script%3E'))</script>
+<script src="/javascripts/jquery.mCustomScrollbar.min.js"></script>
+<script>
+    (function($){
+        $(window).load(function(){
+            $("#friend_content").mCustomScrollbar({
+        		autoDraggerLength:false
+			});
+        });
+    })(jQuery);
+
+    $(document).ready(function () {
+	var socket = io.connect();
+	$.get('/get_id', function(data){
+		alert(data);
+	});
+
+	// client_1_4 친구불러오기 버튼 리스너
+	$("#sssss").click(function(evt) {
+		load();
+	});
+
+	var load = function () {	
+		$.get('/member_list', function (data) {
+			$("#friend_content").empty();
+			
+			$(data).each(function (i) {
+				$("#friend_content").prepend(" <table class='item' border='0' cellpadding='0' cellpadding='0'><table>");
+				$("#friend_content .item:first").append("<td width='35px'><img src='" +  jsonToValue(this.session,'\"photo\":\"') + "'></td>" );
+				$("#friend_content .item:first").append("<td width='110px' class='profile_normal'>" + jsonToValue(this.session,'\"name\":\"') + "</td>" );
+				$("#friend_content .item:first").append("<td width='20px'></td>" );
+				$("#friend_content .item:first").append("<td width='35px'><input type='image' src='/images/btn_message_act.jpg' value=" + jsonToValue(this.session,'\"socketID":\"') + "/></td>" );
+				$("#friend_content .item:first").append("<td width='26px'>"+
+				"<form method='post' action='/rtc'>"+
+				"<input type='hidden' name='rtc_id' id='rtc_id' value=" + jsonToValue(this.session,'\"email":\"') + "/>" +
+				"<input type='image' value='submit' src='/images/btn_camchat_act.jpg'/>"+
+				"</form></td>" );
+			});
+		});
+	};
+
+	function jsonToValue(session, name){
+		var temp = session.split(name,2);
+		var data = temp[1].split('\"',2);
+		return data[0];
+	}
+
+    });
+</script>
+
+
+<!-- *************************************************************************************** -->
+<link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css">
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+
+<!-- 화상채팅 스타일 및 스크립트 -->
+  <style>
+  .video_chat_draggable_container{
+	float:left;
+	width:650px;
+   }
+
+  .video_chat_draggable_pannel_wrap{
+	float:  left;
+	width:  102px; 
+	height: 110px; 
+	background: #ffffff;
+	display:none;
+   }
+
+   .video_chat_draggable_pannel_status_Bar{
+	width:102px;
+	height:23px;
+	background:#bfe124;
+	color:#ffffff;
+	
+   }
+
+   .video_chat_draggable_pannel_status_Bar span{font-weight:800; padding-top:5px; display:block; text-align:center;}
+
+   .video_chat_draggable_wrap{
+	float:  left;
+	width:  320px; 
+	height: 264px; 
+	border: 1px solid #efefef;
+	background: #ffffff;
+	display:none;
+   }
+
+   .video_chat_draggable_status_Bar{
+	width:320px;
+	height:23px;
+	background:#bfe124;
+	color:#ffffff;
+   }
+
+   .video_chat_draggable_status_Bar span{font-weight:800; display:inline-block; margin:4px 10px;}
+  </style>
+ 
+  <script>
+  $(function() {
+    $( "#video_chat_draggable_pannel" ).draggable({ snap: true });
+    $( "#video_chat_draggable1" ).draggable({ snap: true });
+	$( "#video_chat_draggable2" ).draggable({ snap: true });
+	$( "#video_chat_draggable3" ).draggable({ snap: true });
+	$( "#video_chat_draggable4" ).draggable({ snap: true });
+	$( "#video_chat_draggable5" ).draggable({ snap: true });
+	$( "#video_chat_draggable6" ).draggable({ snap: true });
+  });
+  </script>
+
+<!-- 화상채팅 스타일 및 스크립트 -->
+
+<!-- *************************************************************************************** -->
+</head>
+
+<body>
+<!-- wrap -->
+<div id="wrap">
+	<!-- header -->
+	<div id="header" class="">
+		<div id="logo">
+        <a href="index.html"><img src="/images/logo.png"></a>
+        </div>
+        <div id="menu">
+        <img src="/images/menu.jpg">
+        </div>
+	</div>
+    <!-- //header -->
+    <!-- container -->
+	<!-- draggable_container -->
+  <div id="container" class="mainpage_container"> 
+
+
+    <div id="video_chat_draggable_container" class="video_chat_draggable_container">
+	  <div id="video_chat_draggable_pannel" class="video_chat_draggable_pannel_wrap">
+		<div class="video_chat_draggable_pannel_status_Bar">
+			<span>화상채팅</span>
+		</div>
+
+	  </div>
+	  <div id="video_chat_draggable1" class="video_chat_draggable_wrap">
+		<div class="video_chat_draggable_status_Bar">
+			<span>심규태(나)<span>
+		</div>
+		<video></video>
+	  </div>
+	  <div id="video_chat_draggable2" class="video_chat_draggable_wrap">
+		<div class="video_chat_draggable_status_Bar">
+			<span>심규태(나)<span>
+		</div>
+	  </div>
+	  <div id="video_chat_draggable3" class="video_chat_draggable_wrap">
+		<div class="video_chat_draggable_status_Bar">
+			<span>심규태(나)<span>
+		</div>
+	  </div>
+	  <div id="video_chat_draggable4" class="video_chat_draggable_wrap">
+		<div class="video_chat_draggable_status_Bar">
+			<span>심규태(나)<span>
+		</div>
+	  </div>
+	  <div id="video_chat_draggable5" class="video_chat_draggable_wrap">
+		<div class="video_chat_draggable_status_Bar">
+			<span>심규태(나)<span>
+		</div>
+	  </div>
+	  <div id="video_chat_draggable6" class="video_chat_draggable_wrap">
+		<div class="video_chat_draggable_status_Bar">
+			<span>심규태(나)<span>
+		</div>
+	  </div>
+	 </div><!-- //draggable_container -->
+
+    
+  </div> <!-- //container -->
+<!-- //wrap -->
+<!-- footer -->
+	<div id="footer">
+    	<div id="footer_copyright">
+        <img src="/images/copyright.jpg">
+        </div>
+    </div>
+	<!-- //footer -->
+</body>
+</html>

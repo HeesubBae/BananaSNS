@@ -1,0 +1,37 @@
+@charset "utf-8";
+#login{width:329px;height:130px;margin-top:60px;auto;background:url(../images/login.png)}
+#join{width:329px;height:217px;margin-top:30px;auto;margin-top:5px;background:url(../images/join.png)}
+.login{float:left;margin-top:14px;margin-left:15px;}
+.join{float:left;margin-top:12px;margin-left:15px;}
+.login2{float:left;margin-top:38px;margin-left:15px}
+.login_id_form{width:291px;height:30px;border-color:#ddd;border-width:thin;border-style:double;font-family:굴림; font-size:14px; color:#b3b3b3;}
+.login_pswd_form{width:209px;height:30px;border-color:#ddd;border-width:thin;border-style:double;font-family:굴림; font-size:14px; color:#b3b3b3;}
+#login_ul{float:left;height:5px;}
+#login_ul li{display:inline; float:left;padding-right:3px;}
+#container {  width:860px; min-height:100%;margin:0 auto;overflow:hidden;}
+
+/* Common */
+body,p,h1,h2,h3,h4,h5,h6,ul,ol,li,dl,dt,dd,table,th,td,form,fieldset,legend,input,textarea,button,select{margin:0;padding:0;}
+body,input,textarea,select,button,table{font-family:'굴림',Dotum,Helvetica,sans-serif;font-size:12px;color:#333;}
+img,fieldset{border:0;} 
+ul,ol{list-style:none;} 
+em,address{font-style:normal;} 
+a{text-decoration:none; color:#0077c2;} 
+a:hover,a:active,a:focus{text-decoration:underline; color:#0077c2;} 
+.blind{visibility:hidden;overflow:hidden;position:absolute;top:0;left:0;width:1px;height:1px;font-size:0;line-height:0;} 
+html{height:100%;overflow:hidden;}
+body       { background:url(../images/background.jpg); background-size:100%; height:100%;overflow:hidden;}
+#wrap      { float:left; position:relative; width:100%; margin:auto;	}
+#top       { float:left; position:relative; width:100%; height:46px;	background-color:#2e2227;}
+#bottom	   { position:fixed;width:100%;height:36px;margin-top:50%;bottom:0;background-color:#FFF;z-index:35}
+
+#container {  width:860px; min-height:500px;margin:0 auto; overflow: hidden;}<!-- -->
+
+#left      { float:left; width:513px;height:1px;}
+#right     { float:left; width:344px;height:100%;}
+
+
+#top_set_wrap  { width:860px; height:46px; margin:0 auto; }				
+.logo          { float:left; width:194px; height:46px; display:inline-block;}
+#top_set       { float:left; width:211px; height:26px; margin-top:11px; margin-left:436px;}
+#top_set li    { float:left;  display:inline; width:35px; height:26px; margin-left:7px;}

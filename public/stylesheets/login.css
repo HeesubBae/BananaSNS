@@ -1,0 +1,8 @@
+@charset "utf-8";
+.index_left{width:432px;height:355px;margin-top:80px;margin-bottom::-80px;bottom:50%;z-index:30;float:left;}
+.index_right{width:432px;height:355px;margin-top:80px;margin-bottom::-80px;bottom:50%;z-index:30;float:left;}
+.login_id_form{width:291px;height:30px;border-color:#ddd;border-width:thin;border-style:double;font-family:굴림; font-size:14px; color:#b3b3b3;}
+.login_pswd_form{width:209px;height:30px;border-color:#ddd;border-width:thin;border-style:double;font-family:굴림; font-size:14px; color:#b3b3b3;}
+#login{width:329px;height:130px;margin-left:82px;auto;background:url(/images/login.png)}
+#join{width:329px;height:217px;margin-left:82px;auto;margin-top:5px;background:url(/images/join.png)}
+.index_container{position:absolute;margin-left:-432px;margin-top:50px;margin-bottom:36px;left:50%;width:865px;z-index:25}

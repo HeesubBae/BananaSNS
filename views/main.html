@@ -1,0 +1,500 @@
+<!doctype html>
+<html>
+<head>
+<meta charset='utf-8'>
+<title>BananaSNS</title>
+<script src='/socket.io/socket.io.js'></script>
+<link href='/stylesheets/style.css' rel='stylesheet' type='text/css'>
+<link href='/stylesheets/mypage.css' rel='stylesheet' type='text/css'>
+
+<!-- scroll Bar -->
+<script src='/javascripts/jquery-1.9.1.min.js'></script>
+<link href='/stylesheets/jquery.mCustomScrollbar.css' rel='stylesheet' type='text/css'>
+<script>!window.jQuery && document.write(unescape('%3Cscript src="js/minified/jquery-1.9.1.min.js"%3E%3C/script%3E'))</script>
+<script src='/javascripts/jquery.mCustomScrollbar.js'></script>
+
+<script>
+
+$(document).ready(function(){
+
+	socket = io.connect();
+
+	//client_1_1 새로고침 막기
+/*
+	document.onkeydown = function(){
+		if(event.keyCode == 116){
+			event.keyCode = 2;
+			return false;
+		}
+		else if(event.ctrlKey && (event.keyCode == 78 || event.keyCode == 82)){
+			return false;
+		}else if(event.keyCode == 8){
+			return false;
+		}
+	}
+*/
+
+	// client_1_2 친구불러오기 버튼 리스너
+	$("#ml_replace").click(function(evt) {
+		load();
+	});
+
+	var load = function () {	
+		$.get('/member_list', function (data) {
+			$("#member_list").empty();
+			
+			$(data).each(function (i) {
+				$("#member_list").prepend("<li></li>");
+				$("#member_list li:first").append("<span class='ml_photo'><img src='"+  jsonToValue(this.session,'\"photo\":\"') + "'alt='friend_photo'/></span>" );
+				$("#member_list li:first").append("<span class='ml_name'>" + jsonToValue(this.session,'\"name\":\"') + "</span>" );
+				$("#member_list li:first").append("<span class='ml_message'><img src='/images/btn_message_act.jpg' alt='send message' value=" + jsonToValue(this.session,'\"socketID":\"') + "/></span>" );
+				$("#member_list li:first").append("<span class='ml_rtc'><img src='/images/btn_camchat_act.jpg' alt='send message' value=" + jsonToValue(this.session,'\"socketID":\"') + " /></span>" );			
+			});
+		});
+	};
+	
+	// client_1_5 프로필 받기
+	var load_profile=function(){
+		$.post('/member_my_profile',function(data){
+			//$("#profile_wrap").empty();		
+			$("#profile_info_name").prepend(data.name);
+			$("#profile_info_birth").prepend(data.birth);
+			$("#profile_info_location").prepend(data.location);
+			$("#profile_info_edit").prepend("<a href='"+data.id+"'>프로필 수정&gt;&gt;</a>");
+
+		});
+	};
+	/*
+					<div id='profile_photo'><img src='/images/photo.jpg' alt='profile_photo'></div>
+					<div id='profile_info'>
+						<p id='profile_info_name'>심규태</p>
+						<p id='profile_info_birth'>1989년 6월 25일생</p>
+						<p id='profile_info_location'>Daegu, South Korea</p>
+						<p id='profile_info_edit'><a href='#'>프로필 수정&gt;&gt;</a></p>
+					</div>	*/
+
+	// client_1_3 메시지박스 클릭체크 핸들러
+	$('#message_box_list li').click(changeClass);
+
+
+	//  client_1_4 스크롤바 실행
+	mCustomScrollbars();
+
+
+	// *********이벤트 리스너 모음 **************
+	
+	// client_1_5 마이페이지 리스너
+	$("#topset_mypage").click(function(evt) {
+		// 로그인 사용자
+		$('#member_list_wrap').attr('style','display:none');
+		// 메세지 박스
+		$('#memobox_wrap').attr('style','display:none');
+		// 메시지 내용페이지
+		$('#message_content_wrap').attr('style','display:none');
+		// 타임라인
+		$('#time_line_wrap').attr('style','display:none');
+		// 마이페이지
+		$('#mypage_total_wrap').attr('style','display:none');
+		// 마이페이지 - 친구리스트
+		$('#mypage_friend_list_wrap').attr('style','display:none');
+		// 친구요청페이지
+		$('#searchpage_friend_list_wrap').attr('style','display:none');
+
+
+		// 로그인 사용자
+		$('#member_list_wrap').attr('style','display:block');
+		// 마이페이지
+		$('#mypage_total_wrap').attr('style','display:block');
+		// 타임라인
+		$('#time_line_wrap').attr('style','display:block');
+	});
+
+	// client_1_6 커뮤니티피이지 버튼 리스너
+	$("#topset_community").click(function(evt) {
+		// 로그인 사용자
+		$('#member_list_wrap').attr('style','display:none');
+		// 메세지 박스
+		$('#memobox_wrap').attr('style','display:none');
+		// 메시지 내용페이지
+		$('#message_content_wrap').attr('style','display:none');
+		// 타임라인
+		$('#time_line_wrap').attr('style','display:none');
+		// 마이페이지
+		$('#mypage_total_wrap').attr('style','display:none');
+		// 마이페이지 - 친구리스트
+		$('#mypage_friend_list_wrap').attr('style','display:none');
+		// 친구요청페이지
+		$('#searchpage_friend_list_wrap').attr('style','display:none');
+
+
+		// 로그인 사용자
+		$('#member_list_wrap').attr('style','display:block');
+		// 친구요청페이지
+		$('#searchpage_friend_list_wrap').attr('style','display:block');
+	});
+
+	// client_1_7 메시지함 리스너
+	$("#topset_message").click(function(evt) {
+		// 로그인 사용자
+		$('#member_list_wrap').attr('style','display:none');
+		// 메세지 박스
+		$('#memobox_wrap').attr('style','display:none');
+		// 메시지 내용페이지
+		$('#message_content_wrap').attr('style','display:none');
+		// 타임라인
+		$('#time_line_wrap').attr('style','display:none');
+		// 마이페이지
+		$('#mypage_total_wrap').attr('style','display:none');
+		// 마이페이지 - 친구리스트
+		$('#mypage_friend_list_wrap').attr('style','display:none');
+		// 친구요청페이지
+		$('#searchpage_friend_list_wrap').attr('style','display:none');
+
+
+
+		// 메세지 박스
+		$('#memobox_wrap').attr('style','display:block');
+		// 메시지 내용페이지
+		$('#message_content_wrap').attr('style','display:block');
+	});
+
+	// client_1_7 RTC 리스너
+	$("#topset_rtc").click(function(evt) {
+		$('#member_list_wrap').attr('style','display:block');
+	});
+
+	// client_1_7 글쓰기 리스너
+	$("#topset_write").click(function(evt) {
+		$('#member_list_wrap').attr('style','display:block');
+	});
+
+
+	
+
+	load();
+});
+
+
+
+function jsonToValue(session, name){
+		var temp = session.split(name,2);
+		var data = temp[1].split('\"',2);
+		return data[0];
+	}
+
+
+
+
+/*************** Scroll Bar 시작*********************/
+$(window).load(function() {
+	
+});
+
+function mCustomScrollbars(){
+	$(".scroll_div_member_list").mCustomScrollbar();
+	$(".scroll_div_message_box_list").mCustomScrollbar();
+	$(".scroll_div_message_content").mCustomScrollbar();
+
+
+}
+/***************** Scroll Bar 끝*******************/
+
+
+/*************** 뒤로가기 막는함수 시작 *********************/
+/*
+var pageout = false;
+var link = false;
+function pout() {
+    if (!pageout && !link) {
+      pageout = true;
+      return "이 페이지에서 나가시겠습니까";
+    }
+  }
+window.onbeforeunload = pout;
+*/
+/*************** 뒤로가기 막는함수 끝 *********************/
+
+
+
+/*************** 메시지박스 체크 시작 *********************/
+function changeClass(){
+	$.each($('#message_box_list li'),function(i){
+		$(this).attr('class','');
+});
+
+$(this).attr('class','message_box_list_li_on');
+}
+/*************** 메시지박스 체크 끝 *********************/
+
+
+
+
+</script>
+
+
+</head>
+<body> 
+
+	<div id='wrap'>
+		<div id='top'>
+			<div id='top_set_wrap'>
+				<h1 class='logo'><a href='/main'><img src='/images/logo.png'></a></h1>
+				<ul id='top_set'>
+					<li><input id='topset_mypage'    type='image' src='/images/top_set01.png'></li>
+					<li><input id='topset_community' type='image' src='/images/top_set02.png'></li>
+					<li><input id='topset_message'   type='image' src='/images/top_set03.png'></li>
+					<li><input id='topset_rtc'       type='image' src='/images/top_set04.png'></li>
+					<li><input id='topset_write'     type='image' src='/images/top_set05.png'></li>
+				</ul>
+			</div>
+		</div>
+		
+		<div id='container'>
+			<div id='left'><!-- ##################### 'left' #####################  -->
+				<!-- '[1]프로필 시작' -->
+				<div id='profile_wrap' class='radious'>
+					<div id='profile_photo'><img src='/images/photo.jpg' alt='profile_photo'></div>
+					<div id='profile_info'>
+						<p id='profile_info_name'>심규태</p>
+						<p id='profile_info_birth'>1989년 6월 25일생</p>
+						<p id='profile_info_location'>Daegu, South Korea</p>
+						<p id='profile_info_edit'><a href='#'>프로필 수정&gt;&gt;</a></p>
+					</div>
+				</div>
+				<!-- '[1]프로필 끝' -->
+
+				<!-- '[2]접속중 친구리스트 시작' -->
+				<div id='member_list_wrap' class='radious'>
+					<div class='section_header'>
+						<span class='section_header_text'>접속중인 친구</span>
+						<span class='member_list_count'>(16/200)</span>
+						<span class='member__list_replash'>
+							<input id='ml_replace' type='image' src='/images/reflash.png' value='호출'/>
+						</span>
+					</div>
+					<div class='scroll_div_member_list'>
+						<ul id='member_list'>
+						
+						</ul>
+						</div><!-- 'scroll_div_member_list' -->
+					<div class='ml_total_list'><a href='#'>전체친구보기</a></div>
+				</div>
+				<!-- '[2]접속중 친구리스트 끝' -->
+
+				<!-- '[3]받은메시지함 시작' -->
+				<div id='memobox_wrap' class='radious' style='display:none;'>
+					<div class='section_header'>
+						<span class='section_header_text'>받은 메시지함</span>
+						<span class='member__list_replash'>
+							<input id='ml_replace' type='image' src='/images/reflash.png' value='호출'/>
+						</span>
+					</div>
+					<ul class='memobox_search_form_wrap'>
+						<li><input type='text' id='search_memo_form'/></li>
+						<li><input type='image'id='search_memo_submit' src='/images/search.png'/></li>
+					</ul>
+					<div class='scroll_div_message_box_list'>
+						<ul id='message_box_list'>
+							<li>
+								<div class='message_box_list_photo'>
+									<img src='/images/photo.jpg' alt='friend_photo'/>
+								</div>
+								<div class='message_box_list_info'>
+									<div class='mb_name'>심규태태</div>
+									<div class='mb_time'>2013년 12월 12일23시30분</div>
+									<p class='mb_content'>안녕하세요 심규태입니다. 잘지내셨나요?잘지내셨나요?잘지내셨나요?잘지내셨나요?</p>
+								</div>
+							</li>
+						</ul><!-- 'message_box_list' -->
+					</div><!-- ''scroll_div_message_box_list' '-->
+				</div><!-- 'memobox_wrap' -->
+				<!-- '[3]받은메시지함 끝' -->
+			</div><!-- ##################### 'left' #####################  -->
+
+			<div id='right'><!-- @@@@@@@@@@@@@@@@@@@@@@ ' right ' @@@@@@@@@@@@@@@@@@@@@@@@@@@@ -->
+		
+				<!-- 메시지내용 -->
+				<div id='message_content_wrap' class='radious' style='display:none;'>
+					<div class='section_header'>
+						<span class='section_header_text'>심규태님과의 대화입니다.</span>
+					</div><!-- 'section_header' -->
+
+					<ul id='message_content' class='scroll_div_message_content'>
+						<li>
+							<div class='message_content_photo'>
+								<img src='/images/photo.jpg' alt='friend_photo'/>
+							</div>
+							<div class='message_content_info'>
+								<div class='mc_name'><a href='#'>심규태</a></div>
+								<div class='mc_time'>2013년 12월 12일</div>
+								<p class='mc_content'>안녕하세요 심규태입니다. 잘지내셨나요?잘지내셨나요?잘지내셨나요?잘지내셨나요?안녕하세요 심규태입니다. 잘지내셨나요?잘지내셨나요?잘지내셨나요?잘지내셨나요?안녕하세요 심규태입니다. 잘지내셨나요?잘지내셨나요?잘지내셨나요?잘지내셨나요안녕하세요 심규태입니다. 잘지내셨나요?잘지내셨나요?잘지내셨나요?잘지내셨나요?안녕하세요 심규태입니다. 잘지내셨나요?잘지내셨나요?잘지내셨나요?잘지내셨나요??</p>
+							</div>
+						</li>
+					</ul>
+					
+					<div class='message_content_input_wrap'>
+						<textarea id='message_content_input'>123</textarea>
+						<input id='message_content_submit' type='image' src='/images/resend.png' />
+					</div>
+				</div><!-- ''message_content_wrap' -->
+				<!-- 메시지내용 -->
+
+				<!-- 마이페이지 전체 wrap -->
+				<div id='mypage_total_wrap' style='display:none;'>
+					<!-- 마이페이지 커버 -->
+					<div id='mypage_cover_wrap'>
+						<div id='mypage_profile_photo'>
+							<img src='/images/profile.png' />
+						</div>
+						<p id='mypage_user_name'>배희섭</p>
+						<p id='mypage_user_id'>magicmode@naver.com</p>
+						<div id='mypage_cover_text'>안녕하세요 배희섭의 바나나에 오신것을 환영합니다. 즐거운 시간 되세요.안녕하세요 배희섭의 바나나에 오신것을 환영합니다. 즐거운 시간 되세요.안녕하세요 배희섭의 바나나에 오신것을 환영합니다. 즐거운 시간 되세요.안녕하세요 배희섭의 바나나에 오신것을 환영합니다. 즐거운 시간 되세요.안녕하세요 배희섭의 바나나에 오신것을 환영합니다. 즐거운 시간 되세요.안녕하세요 배희섭의 바나나에 오신것을 환영합니다. 간 되세요.
+						</div>
+						<ul class='mypage_cover_option'>
+							<li id='mypage_location'>대구광역시</li>
+							<li id='mypage_cover_url'>www.naver.com</li>
+						</ul>
+
+					</div><!-- 'mypage_cover_wrap' -->
+					<!-- 마이페이지 커버 끝 -->
+
+					<!-- 마이페이지 탭메뉴 -->
+					<div id='mypage_tap_menu_wrap'>
+					 <ul id='mypage_tap_menu'>
+						<li class='mypage_tap_menu_timeline'>
+							<a href="#">
+							<p id='total_comment' class='mypage_tap_count'>1000000</p>
+							<p class='mypage_tap_text'>최근소식</p>
+							</a>
+						</li>
+						<li class='mypage_tap_menu_timeline'>
+							<a href="#">
+							<p id='total_info' class='mypage_tap_count'>10000000</p>
+							<p class='mypage_tap_text'>정보</p>
+							</a>
+						</li>
+						<li class='mypage_tap_menu_timeline'>
+							<a href="#">
+							<p id='total_friend' class='mypage_tap_count'>1000000</p>
+							<p class='mypage_tap_text'>친구</p>
+							</a>
+						</li>
+					 </ul>
+					 <div class='mypage_tap_button'>
+						<input type='image' src='/images/bt_addfriend01.png' />
+					 </div>
+					</div><!--'mypage_tap_menu'-->
+					<!-- 마이페이지 탭메뉴 끝 -->
+				</div>
+				<!-- 마이페이지 전체 wrap -->
+
+				<!-- 마이페이지 친구 시작 -->
+				<div id='mypage_friend_list_wrap' class='radious' style='display:none;'>
+					<div class='section_header'>
+						<span class='section_header_text'>친구관리</span>
+						<ul class='search_friend_form_wrap'>
+							<li><input type='text' id='search_friend_form'/></li>
+							<li><input type='image' src='/images/search.png'/></li>
+						</ul>
+					</div><!-- 'section_header' -->
+					<ul id='mypage_friend_list' >
+						<li>
+							<div class='mypage_friend_list_photo'><a href='#'><img src='/images/photo.jpg' alt='profile_photo'></a></div>
+							<div class='mypage_friend_list_info'>
+								<p class='mypage_friend_list_info_name'>심규태</p>
+								<p class='mypage_friend_list_info_birth'>1989년 6월 25일생</p>
+								<p class='mypage_friend_list_info_location'>Daegu, South Korea</p>
+								<p class='mypage_friend_list_info_message'><a href='#'>메시지 보내기</a></p>
+							</div>
+						</li>
+					</ul>
+				</div><!-- 'mypage_friend_list_wrap'-->
+				<!-- 마이페이지 친구 끝 -->
+
+				<!-- 친구로 부터의요청및 검색페이지 친구 시작-->
+				<div id='searchpage_friend_list_wrap' class='radious' style='display:none;'>
+					<div class='section_header'>
+						<span class='section_header_text'>친구요청에 답하기</span>
+						<a href='#'>내가 요청한 요청보기</a>
+					</div><!-- 'section_header' -->
+					<ul id='searchpage_friend_list' >
+						<li class='searchpage_friend_list_li'>
+							<div class='searchpage_friend_list_photo'><a href='#'><img src='/images/photo.jpg' alt='profile_photo'></a></div>
+							<div class='searchpage_friend_list_info'>
+								<p class='searchpage_friend_list_info_name'>심규태</p>
+								<p class='searchpage_friend_list_info_birth'>1989년 6월 25일생</p>
+								<p class='searchpage_friend_list_info_location'>Daegu, South Korea</p>
+								<p class='searchpage_friend_list_info_message'><a href='#'>메시지 보내기</a></p>
+							</div>
+							<ul class='searchpage_confirm'>
+								<li class='addfriend'><input type='image' src='/images/minibt_addfriend.png'></li>
+								<li class='del_confirm'><input type='image' src='/images/minibt_del_confirm.png'></li>
+								<li class='confirm'><input type='image' src='/images/minibt_confirm.png'></li>
+							</ul>
+						</li>
+					</ul>
+				</div><!-- 'searchpage_friend_list_wrap'-->
+				<!-- 친구로 부터의요청및 검색페이지 친구 끝-->
+
+				<!-- 타임라인 -->
+				<div id='time_line_wrap' class='radious' style='display:;'>
+					<div class='section_header'>
+						<span class='section_header_text'>최근소식</span>
+					</div>
+					<ul id='time_line'>
+						<li class='time_line_loop_li'>
+							<div class='tm_photo'><img src='/images/photo.jpg' alt='friend_photo'/></div>
+							<div class='tm_info'>
+								<p class='tm_name'>
+									<span class='link_user'><a href='#'>카가와 신지</a></span>
+									<input type='image' src='/images/del.png' />
+								</p>
+								<p class='tm_content'>나는 원숭이다 우끼끼 우끼끼 우끼끼 우끼ㄱ끼 구기기기나는 원숭이다 우끼끼 우끼끼 우끼끼 우끼ㄱ끼 구기기기나는 원숭이다 우끼끼 우끼끼 우끼끼 우끼ㄱ끼 구기기기나는 원숭이다 우끼끼 우끼끼 우끼끼 우끼ㄱ끼 구기기기나는 원숭이다 우끼끼 우끼끼<br> 우끼끼 우끼ㄱ끼 구기기기나는 원숭이다 우끼끼 우끼끼 우끼끼 우끼ㄱ끼 구기기기나는 원숭이다 우끼끼 우끼끼<br> 우끼끼 우끼ㄱ끼 구기기기나는 원숭이다 우끼끼 우끼끼<br> 우끼끼 우끼ㄱ끼 구기기기나는 원숭이다 우끼끼 우끼끼<br> 우끼끼 우끼ㄱ끼 구기기기나는 원숭이다 우끼끼 우끼끼<br> 우끼끼 우끼ㄱ끼 구기기기
+								</p>
+							</div>
+							<div class='tm_option'>
+								<div class='tm_option_icon'><input type='image' src='/images/good.jpg'></div>
+								<div class='tm_option_count'>10000</div>
+								<div class='tm_option_icon'><input type='image' src='/images/icon_comment.jpg'></div>
+								<div class='tm_option_count'>1</div>
+								<div class='tm_option_time'>2013년 2월 3일 21시 30분</div>
+							</div>
+							<ul class='tm_new_comment'>
+								<li class='tm_new_comment_photo'><img src='/images/photo.jpg' alt='friend_photo'/></li>
+								<li class='tm_new_input'><input type='text' class='tm_nwe_input_form' /> </li>
+								<li class='tm_new_submit'><input type='image' class='tm_new_input_submit' src='/images/bt_write.png' value='글쓰기'/></li>	
+							</ul>
+							<ul class='tm_comment'>
+								<li>
+									<div class='tm_comment_photo'><img src='/images/photo.jpg' alt='friend_photo'/></div>
+									<div class='tm_comment_info'>
+										<p class='tm_comment_name'>
+											<span class='link_user'><a href='#'>배희섭</a></span>
+											<input type='image' src='/images/del.png' />
+										</p>
+										<p class='tm_comment_content'>야기분좋다~!!!!!!! ya~ feel so good~ 김일성 김정일 개객끼 우끼끼 우끼끼 우끼끼 우끼끼 우끼끼야기분좋다~!!!!!!! ya~ feel so good~ 김일성 김정일 개객끼 우끼끼 우끼끼 우끼끼 우끼끼 우끼끼	
+										</p>
+										<div class='tm_comment_time'><span class='timecolor'>2013년 2월 3일 21시 30분</span></div>
+									</div>
+								</li><!-- ***tm_comment**-->
+							</ul><!-- 'tm_comment' -->
+						</li><!-- ***LOOP*** -->
+					</ul><!-- 'time_line' -->
+					<!-- appending Butten -->
+					<div id='time_line_append'>
+						<center><input type='image' id='time_line_append_list_bt' class='bt_center' src='/images/bt_load_more.png' value='추가로딩'/></center>
+					</div>
+					<!-- appending Butten -->
+				</div><!-- 'time_line_wrap' -->
+				<!-- 타임라인 끝-->
+
+			</div><!-- @@@@@@@@@@@@@@@@@@@@@@ ' right ' @@@@@@@@@@@@@@@@@@@@@@@@@@@@ -->
+		</div><!-- 'container' -->
+
+		<div id='bottom'>
+
+		</div>
+	</div>
+
+</body>
+</html>

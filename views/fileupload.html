@@ -1,0 +1,29 @@
+<!doctype html>
+<html>
+<head>
+<meta charset='utf-8'>
+<title>BananaSNS</title>
+<script src='/socket.io/socket.io.js'></script>
+<link href='/stylesheets/style.css' rel='stylesheet' type='text/css'>
+<link href='/stylesheets/mypage.css' rel='stylesheet' type='text/css'>
+
+
+</head>
+<body> 
+	<div id='file_upload_total_wrap'>
+        <!-- 파일업로드 wrap -->
+        <div class="file_upload_form_wrap">
+            <!-- text박스에 value="5MB를 넘을 수 없습니다." 라고 입력하면 value 값이 보여짐. 첨부파일이 첨부되면 문구는 없어짐 -->
+                <input type='text'  id='file_route' class='file_upload_text' readonly='readonly' title='첨부된 파일경로' value='5m를 넘을수 없습니다.'/>
+            <span class="file_upload_wrap"> 
+                <input type='file' class='file_upload_add' onchange="javascript:document.getElementById('file_route').value=this.value" />
+            </span>
+        </div>
+        <div id="common_submit_wrap">
+                <a class="bt_save" onclick="form.submit();">등록</a>
+                <a class="bt_cancel" onclick="history.back();">취소</a>
+        </div>
+        <!-- 파일업로드 wrap -->
+	</div>
+</body>
+</html>

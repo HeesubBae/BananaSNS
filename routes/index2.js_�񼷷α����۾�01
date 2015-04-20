@@ -1,0 +1,140 @@
+// 몽고디비 
+var mongoose = require('mongoose');
+var connection1 = mongoose.createConnection('mongodb://localhost/banana'); //데이터 베이스에 연결합니다.
+var sessionsModel = require('./model_session.js');
+
+var MongoClient =require('mongodb').MongoClient;
+
+
+var Schema = mongoose.Schema;
+
+
+// server_1_1 멤버 모델을 정의합니다.
+var members = new Schema({
+	email: String,
+	pass: String,
+	name: String
+});
+var memberModel = mongoose.model('members', members);
+
+
+
+
+// server_1_2 - 인덱스페이지 라우팅
+exports.index = function(req, res){
+	res.render('index', {});
+};
+
+// server_1_3 - 메인페이지 라우팅
+exports.main = function(req, res){
+  res.render('lobby', { title: 'Banana' });
+};
+
+// server_1_4 - 회원가입 함수 member_insert();
+exports.member_insert = function(req, res) {
+	var email = req.body.join_email;
+	var pass = req.body.join_pass;
+	var name = req.body.join_name
+	
+	var member_bean = new memberModel();
+	
+	member_bean.email = email;
+	member_bean.pass = pass;
+	member_bean.name = name;
+	
+	member_bean.save(function (err) {
+		if (err) {
+			console.log("fail");
+			throw err;
+		}
+		else {
+			console.log("success");
+			res.json({status: "SUCCESS"});
+		}
+	});
+};
+
+// server_1_5 - 로그인 함수 member_insert();
+exports.member_select = function(req, res) {
+	var id = req.body.login_id;
+	var pass = req.body.login_pass;
+	memberModel.findOne({'email':id,'pass':pass},function(err,data)
+	{
+		if(err){
+			console.log("*********LOGIN:FAIL**********");
+			res.json({status:"FAIL"});
+			throw err;
+		}else{
+			if(data!=null){
+				console.log("*********LOGIN:SUCEES**********");
+					MongoClient.connect('mongodb://localhost:27017/banana', function(err,db){
+					if(err) throw err;
+
+					var kkk={session:/data.email/};
+					var aaa=JSON.stringify(kkk);
+
+					console.log("kkk="+kkk);
+						//var name='session';
+						//var a1="/";
+						//var a2="/";
+						//var value=a1.concat(req.body.login_id,a2);				
+						
+						//console.log('value='+value);
+						var query={};
+						//query[name]=value;
+
+						var Value_match = new RegExp(data.email);
+						console.dir(Value_match);
+						var query2={'session':/'delta15@nate.com'/};
+
+					var cursor= db.collection('sessions').find({session : Value_match})
+						cursor.each(function(err,doc){
+							if( err)throw err;
+
+							if( doc == null) {
+								console.log('&&&&&&&&&&&&&&&없다&&&&&&&&&&&&');
+								return db.close();
+
+							}else{
+									console.log('&&&&&&&&&&&&&&&있다&&&&&&&&&&&&');
+									console.dir(doc);
+							}
+							
+						});
+					
+					});
+
+			}//if(data!=null){
+		}
+	});
+}
+
+
+
+
+				/*
+				sessionsModel.findOne({'email' : /data.email/ },function(err,session_data)
+				{
+					if(err){
+						res.json({status:"FAIL"});
+						console.log("*********LOGIN:FAIL**********");
+						throw err;
+					}else{
+						if(session_data==null){
+							console.log("********session_datea"+session_data);
+							req.session.email=data.email;
+							req.session.name=data.name;
+							req.session.photo='/images/photo_middel.jpg';
+							res.json({status: "SUCCESS"});
+							console.log("*********LOGIN:SUCCESS**********");
+							console.log(req.session.name+" "+req.session.id);
+						}else{
+							console.log("*********LOGIN:MULTILOGIN**********");
+							res.json({status: "MULTILOGIN"});
+						}
+					}
+				});
+
+				*/
+
+
